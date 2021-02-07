@@ -13,12 +13,12 @@ var parseCoupons=function(coupons,domain){
 
           var couponHTML =''
           coupons.forEach(function(coupon,index){
-              couponHTML+='<li>Code: ' +coupon.code+' - <em>' + coupon.description+'</em></li>';
+              couponHTML+='<li><span class="code">' +coupon.code+'</span> - <p>➡' + coupon.description+'</p></li>';
             //  console.log(coupon.code,coupon.description)
           })
           let couponDisplay=document.createElement('div')
           couponDisplay.className='_coupon__list';
-          couponDisplay.innerHTML='<h1>Coupons</h1><p>List of coupons for: '+domain+'</p><ul>'+couponHTML+'</ul>';
+          couponDisplay.innerHTML='<h1>Coupons</h1><p>Best deals on <strong>'+domain+'<strong></p>'+ '<p style="font-style:italic;">Click any coupon to copy &amp; use<ul>'+couponHTML+'</ul>';
           couponDisplay.style.display='none';
           document.body.appendChild(couponDisplay);
 
@@ -27,7 +27,7 @@ var parseCoupons=function(coupons,domain){
         
           
           
-          couponButton.innerHTML='💰';
+          couponButton.innerHTML='C';
           document.body.appendChild(couponButton);
           createEvents();
 
@@ -38,10 +38,10 @@ var parseCoupons=function(coupons,domain){
 
 var createEvents=function(){
     document.querySelector('._coupon__button').addEventListener('click',function(event){
-        if(document.querySelector('._coupon__list').style.display=='block'){
-
+        if(document.querySelector('._coupon__list').style.display==='block'){
+            document.querySelector('._coupon__list').style.display='none';
         }else{
-            document.querySelector('._coupon__list').style.display=='block'
+            document.querySelector('._coupon__list').style.display='block'
         }
     })
 }
