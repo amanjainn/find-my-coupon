@@ -9,3 +9,16 @@
   };
   // Initialize Firebase
   firebase.initializeApp(firebaseConfig);
+
+
+  chrome.runtime.onMessage.addListener((msg,sender,response)=>{
+        if(msg.command==="fetch"){
+            var domain=msg.data.domain;
+            var enc_domain=btoa(domain);
+            firebase.database().ref('/domain/'+enc_domain).once('value').then(function(snapshot){
+                response({type:"result",status:"success",data:snapshot.val(),request:msg});
+            })
+        }
+    return true;
+
+  })
