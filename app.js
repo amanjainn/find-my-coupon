@@ -23,12 +23,6 @@ var submitCoupon_callback=function(resp,domain){
     alert('Coupon Submitted!');
 }
 
-
-
-
-
-
-
 var parseCoupons=function(coupons,domain){
 
           var couponHTML =''
@@ -52,14 +46,15 @@ var parseCoupons=function(coupons,domain){
         
           
           
-          couponButton.innerHTML='C';
+          couponButton.innerHTML='🤑';
           document.body.appendChild(couponButton);
           var couponSubmitOverlay =document.createElement('div');
           couponSubmitOverlay.className='_submit-overlay';
-          couponSubmitOverlay.innerHTML='<h3>Do you have a coupon for this site?</h3>'
-          +'<div><label>Code:</label><input type="text" class="code"/></div>'
-          +'<div><label>Description:</label><input type="text" class="desc"/></div>'
-          +'<div><button class="submit-coupon">Submit Coupon</button></div>';
+          couponSubmitOverlay.innerHTML='<span class="close">(x) close</span>'
+          +'<h3>Do you have a coupon for this site?</h3>'
+          +'<div><label></label><input type="text" placeholder="Enter the code" class="code question"/></div>'
+          +'<div><label></label><input placeholder="Enter the description"  type="text" class="desc question"/></div>'
+          +'<div><button class="submit-coupon ">Submit Coupon</button></div>';
           couponSubmitOverlay.style.display='none';
           document.body.appendChild(couponSubmitOverlay);
           createEvents();
@@ -68,8 +63,34 @@ var parseCoupons=function(coupons,domain){
 
 }
 
+    var copyToClipboard=function(str){
+        var input=document.createElement('textarea');
+        input.innerHTML=str;
+        document.body.appendChild(input);
+        input.select();
+        var result=document.execCommand('copy');
+        document.body.removeChild(input);
+        return result;
+    }
+
 
 var createEvents=function(){
+
+
+    document.querySelectorAll('._coupon__list .code').forEach(codeItem=>{
+        codeItem.addEventListener('click',event=>{
+            var codeStr=codeItem.innerHTML;
+            copyToClipboard(codeStr);
+        })
+
+    });
+
+    document.querySelector('._submit-overlay .close').addEventListener('click',function(event){
+        document.querySelector('._submit-overlay').style.display='none';
+
+    });
+
+
 
     document.querySelector('._coupon__list .submit-button').addEventListener('click',function(event){
         document.querySelector('._submit-overlay').style.display='block';

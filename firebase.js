@@ -23,7 +23,7 @@
             var domain=msg.data.domain;
             var enc_domain=btoa(domain);
             var code=msg.data.code;
-            var desc=msd.data.desc;
+            var desc=msg.data.desc;
 
             try{
                 var newPost= firebase.database().ref('/domain/'+enc_domain).push().set({
