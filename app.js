@@ -9,16 +9,41 @@ chrome.runtime.sendMessage({command:"fetch",data:{domain:domain}},response=>{
 })
 
 
+var submitCoupon =function(code,desc,domain){
+     console.log('submit coupon',{code:code,desc:desc,domain:domain});
+     chrome.runtime.sendMessage({command:"post",data:{code:code,desc:desc,domain:domain}},response=>{
+        submitCoupon_callback(response.data,domain);
+        
+  })
+}
+
+var submitCoupon_callback=function(resp,domain){
+    console.log('Resp:',resp);
+    document.querySelector('._submit-overlay').style.display='none';
+    alert('Coupon Submitted!');
+}
+
+
+
+
+
+
+
 var parseCoupons=function(coupons,domain){
 
           var couponHTML =''
-          coupons.forEach(function(coupon,index){
+            for (var key in coupons){
+                var coupon=coupons[key];
               couponHTML+='<li><span class="code">' +coupon.code+'</span> - <p>➡' + coupon.description+'</p></li>';
             //  console.log(coupon.code,coupon.description)
-          })
+          }
+            if(couponHTML==''){
+                couponHTML='<p>Be the first to submit a coupon for this site</p>'
+            }
+
           let couponDisplay=document.createElement('div')
           couponDisplay.className='_coupon__list';
-          couponDisplay.innerHTML='<h1>Coupons</h1><p>Best deals on <strong>'+domain+'<strong></p>'+ '<p style="font-style:italic;">Click any coupon to copy &amp; use<ul>'+couponHTML+'</ul>';
+          couponDisplay.innerHTML='<div class="submit-button">Submit Coupon</div>'+'<h1>Coupons</h1><p>Best deals on <strong>'+domain+'<strong></p>'+ '<p style="font-style:italic;">Click any coupon to copy &amp; use<ul>'+couponHTML+'</ul>';
           couponDisplay.style.display='none';
           document.body.appendChild(couponDisplay);
 
@@ -29,6 +54,14 @@ var parseCoupons=function(coupons,domain){
           
           couponButton.innerHTML='C';
           document.body.appendChild(couponButton);
+          var couponSubmitOverlay =document.createElement('div');
+          couponSubmitOverlay.className='_submit-overlay';
+          couponSubmitOverlay.innerHTML='<h3>Do you have a coupon for this site?</h3>'
+          +'<div><label>Code:</label><input type="text" class="code"/></div>'
+          +'<div><label>Description:</label><input type="text" class="desc"/></div>'
+          +'<div><button class="submit-coupon">Submit Coupon</button></div>';
+          couponSubmitOverlay.style.display='none';
+          document.body.appendChild(couponSubmitOverlay);
           createEvents();
 
 
@@ -37,6 +70,18 @@ var parseCoupons=function(coupons,domain){
 
 
 var createEvents=function(){
+
+    document.querySelector('._coupon__list .submit-button').addEventListener('click',function(event){
+        document.querySelector('._submit-overlay').style.display='block';
+
+    });
+
+    document.querySelector('._submit-overlay .submit-coupon').addEventListener('click',function(event){
+           var code=document.querySelector('._submit-overlay .code').value; 
+           var desc=document.querySelector('._submit-overlay .desc').value;
+           submitCoupon(code,desc,window.domain); 
+    });
+
     document.querySelector('._coupon__button').addEventListener('click',function(event){
         if(document.querySelector('._coupon__list').style.display==='block'){
             document.querySelector('._coupon__list').style.display='none';
